@@ -4,20 +4,17 @@ document.addEventListener("DOMContentLoaded", function() {
     async function fetchImages() {
         try {
             const [imageResponse, tagsResponse] = await Promise.all([
-                fetch('https://shak404.github.io/SavedSREFs/images'), // Corrected URL
-                fetch('codes.txt')
-            ]);
+                fetch('images'),
+                fetch('codes.txt')]);
             if (!imageResponse.ok) throw new Error('Failed to fetch images: ' + imageResponse.status);
             if (!tagsResponse.ok) throw new Error('Failed to fetch tags: ' + tagsResponse.status);
             const imageData = await imageResponse.text();
             const tagData = await tagsResponse.text();
             const srefArray = parseImages(imageData);
             const tags = parseTags(tagData);
-            renderImages(srefArray, tags);
-        } catch (error) {
-            console.error('Error fetching images or tags:', error);
-        }
-    }
+            renderImages(srefArray, tags);} 
+            catch (error) {
+            console.error('Error fetching images or tags:', error);}}
 
     // Function to parse images from HTML response
     function parseImages(data) {
