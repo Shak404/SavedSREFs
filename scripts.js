@@ -16,19 +16,30 @@ document.addEventListener("DOMContentLoaded", function() {
             catch (error) {
             console.error('Error fetching images or tags:', error);}}
 
-    // Function to parse images from HTML response
-    function parseImages(data) {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(data, 'text/html');
-        const srefArray = {};
-        Array.from(doc.querySelectorAll('a'))
-            .map(link => link.innerText.trim())
-            .filter(filename => filename !== '')
-            .forEach(filename => {
-                const [sref] = filename.split('-');
-                if (!srefArray[sref]) srefArray[sref] = [];
-                srefArray[sref].push(filename);});
-        return srefArray;}
+            function parseImages(data) {
+                try {
+                    const imageUrls = JSON.parse(data);
+                    const srefArray = {};
+                    
+                    // Assuming each URL contains the SREF code as part of its path or filename
+                    imageUrls.forEach(url => {
+                        const parts = url.split('/');
+                        const filename = parts[parts.length - 1]; // Extract filename from URL
+                        
+                        // Assuming the SREF code is separated from the filename by a "-"
+                        const [sref] = filename.split('-'); // Extract SREF code
+                        
+                        if (!srefArray[sref]) srefArray[sref] = [];
+                        srefArray[sref].push(url);
+                    });
+                    
+                    console.log('Parsed images:', srefArray);
+                    return srefArray;
+                } catch (error) {
+                    console.error('Error parsing image URLs:', error);
+                    return {}; // Return an empty object in case of parsing error
+                }
+            }
 
     // Function to parse tags from the text file
     function parseTags(data) {
@@ -134,7 +145,7 @@ function createColumn(columnClass, filenames, type) {
     column.classList.add("column", columnClass);
     filenames.filter(filename => filename.includes(`-${type}`)).forEach(filename => {
         const img = document.createElement("img");
-        img.dataset.src = "images/" + filename; // Set data-src instead of src
+        img.dataset.src = filename;
         img.classList.add("image-item");
         column.appendChild(img);});
     return column;}
