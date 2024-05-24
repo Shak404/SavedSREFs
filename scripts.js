@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function() {
     async function fetchImages() {
         try {
             const [imageResponse, tagsResponse] = await Promise.all([
-                fetch('images/'),
+                fetch('image_urls.json'),
                 fetch('codes.txt')]);
             if (!imageResponse.ok) throw new Error('Failed to fetch images: ' + imageResponse.status);
             if (!tagsResponse.ok) throw new Error('Failed to fetch tags: ' + tagsResponse.status);
